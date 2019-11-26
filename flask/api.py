@@ -25,8 +25,8 @@ def index():
 def poke_info(_filter):
     data = {'error': 'Invalid parameters, expected Pokemon name/id'}
     status_code = 400
-    if isinstance(int, _filter):
+    if isinstance(_filter, int):
         data, status_code = server.db.find_pokemon(id=_filter)
-    elif isinstance(str, _filter):
+    elif isinstance(_filter, str):
         data, status_code = server.db.find_pokemon(name=_filter)
     return jsonify(pokemon=data), status_code

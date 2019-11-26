@@ -1,4 +1,5 @@
 import re
+
 from datetime import datetime, timedelta
 from threading import Thread
 
@@ -78,7 +79,7 @@ class PokedexData:
         """
         Gets specific information from the api of one Pokemon
         """
-        request_url = self.api_url + poke_id
+        request_url = self.api_url + str(poke_id)
         if not self.api_cache.is_cached(request_url):
             self.api_cache.cache_request(request_url)
         info = self.api_cache.responses.get(request_url)
@@ -93,12 +94,17 @@ class PokedexData:
         Updates information of a list of Pokemon (creating new records if needed)
         """
         results = []
-        if data:
+        if isinstance(data, list):
             for pokemon in data:
                 result = self.pokedex.pokemon.find_one_and_update({'id': pokemon['id']},
                                                                   {'$set': pokemon}, upsert=True)
                 if result:
                     results.append(result['id'])
+        elif isinstance(data, dict):
+           result = self.pokedex.pokemon.find_one_and_update({'id': data['id']},
+                                                                  {'$set': data}, upsert=True)
+           if result:
+               results.append(result['id'])
         return results
 
     def find_pokemon(self, **kwargs):

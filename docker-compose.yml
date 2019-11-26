@@ -1,0 +1,13 @@
+version: '3'
+services:
+    mongo:
+        image: mvertes/alpine-mongo
+        expose:
+            - "27017"
+    flask:
+        build: .
+        ports:
+            - "5000:5000"
+        depends_on:
+            - mongo
+        restart: always
