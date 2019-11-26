@@ -2,7 +2,7 @@ import requests
 
 if __name__ == '__main__':
     try:
-        r = requests.get('http://127.0.0.1:8000')
+        r = requests.get('http://127.0.0.1:5000')
         if r.ok:
             exit(0)
         exit(1)
