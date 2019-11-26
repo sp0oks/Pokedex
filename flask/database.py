@@ -41,7 +41,7 @@ class ApiCache:
 
 
 class PokedexData:
-    def __init__(self, host='mongo', port=27017, cache_limit=300):
+    def __init__(self, db_url, cache_limit=300):
         # PokeAPI static information
         self.api_url = 'https://pokeapi.co/api/v2/pokemon/'
         self.sprites_url = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/'
@@ -49,7 +49,7 @@ class PokedexData:
         # API requests cache
         self.api_cache = ApiCache(cache_limit)
         # Mongo data sources
-        self.client = MongoClient(host=host, port=port)
+        self.client = MongoClient(db_url)
         self.pokedex = self.client.pokedex
 
     def get_pokemon_basic(self, limit=20, offset=0):

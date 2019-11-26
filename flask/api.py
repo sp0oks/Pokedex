@@ -3,7 +3,8 @@ from flask import Flask, jsonify, request
 from database import PokedexData
 
 server = Flask(__name__)
-server.db = PokedexData()
+server.config.from_object('config.Config') 
+server.db = PokedexData(server.config['MONGODB_URL'])
 
 
 @server.route('/', methods=['GET'])
@@ -19,7 +20,7 @@ def index():
     return jsonify(msg=msg, pokemon=data), 200
 
 
-@server.route('/pokemon/<str:_filter>', methods=['GET'])
+@server.route('/pokemon/<string:_filter>', methods=['GET'])
 @server.route('/pokemon/<int:_filter>', methods=['GET'])
 def poke_info(_filter):
     data = {'error': 'Invalid parameters, expected Pokemon name/id'}
