@@ -113,11 +113,11 @@ class PokedexData:
         """
         result = ({}, 204)
 
-        if kwargs.get('id'):
-            info = self.pokedex.pokemon.find_one({'id': kwargs['id']})
+        if kwargs.get('_id'):
+            info = self.pokedex.pokemon.find_one({'id': kwargs['_id']})
             # Information about this Pokemon is unknown or incomplete
             if not info or 'moves' not in info.keys():
-                info = self.get_pokemon_info(kwargs['id'])
+                info = self.get_pokemon_info(kwargs['_id'])
                 if info:
                     result[0][info['id']] = info
 
@@ -129,6 +129,16 @@ class PokedexData:
                     pokemon = self.get_pokemon_info(pokemon['id'])
                     if pokemon:
                         result[0][pokemon['id']] = pokemon
+
+        elif kwargs.get('_type'):
+            info = self.pokedex.pokemon.find({'type': {'$regex': kwargs['_type'], '$options': 'i'}})
+            for pokemon in info:
+                # Information about this Pokemon is incomplete
+                if 'moves' not in pokemon.keys():
+                    pokemon = self.get_pokemon_info(pokemon['id'])
+                    if pokemon:
+                        result[0][pokemon['id']] = pokemon
+
         # If there was at least one result, change HTTP status from 204 (No Content) to 200 (OK)
         if len(result[0].keys()):
             result = (result[0], 200)
