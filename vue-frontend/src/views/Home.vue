@@ -1,27 +1,27 @@
 <template>
     <div>
-        <div class="row">
-            <ul class="pagination">
-                <p class="center-align">{{ getPokeFirstID() }} - {{ getPokeLastID() }}</p>
-                <router-link id="previous" class="btn-floating waves-effect waves-light red left" :to="getRedirect(pokemons.previous)">
-                    <i class="material-icons">chevron_left</i>
-                </router-link>
-                <router-link id="next" class="btn-floating waves-effect waves-light red right" :to="getRedirect(pokemons.next)">
-                    <i class="material-icons">chevron_right</i>
-                </router-link>
-            </ul>
+        <div class="nav-buttons row">
+            <div class="md-layout md-gutter">
+                <md-button id="previous" class="md-accent" :disabled="previous==null" @click="onClick(previous)"><i class="material-icons">chevron_left</i></md-button>
+                <p class="nav-text">{{ getPokeFirstID() }} - {{ getPokeLastID() }}</p>
+                <md-button id="next" class="md-accent" @click="onClick(next)"><i class="material-icons">chevron_right</i></md-button>
+            </div>
         </div>
         <div class="row">
-           <div class="col s4" v-for="pokemon in pokemons.results" v-bind:key="pokemon.id">
-                <div class="card hoverable">
-                    <div class="card-image">
-                        <img class="responsive-img" :src="pokemon.img">
-                    </div>
-                    <div class="card-content">
-                        <p class="card-title capitalize"><b>#{{ pokemon.id }} {{ pokemon.name }}</b></p>
-                        <a class="btn-floating halfway-fab waves-effect waves-light red" href="#"><i class="material-icons">add</i></a>
-                    </div>
-                </div>
+           <div class="card-table">
+                <md-card md-with-hover v-for="pokemon in pokemons.results" v-bind:key="pokemon.id">
+                    <md-card-media md-medium>
+                        <img :src="pokemon.img" :alt="pokemon.name">
+                    </md-card-media>
+                    <md-card-content>
+                        <p class="capitalize"><b>#{{ pokemon.id }} {{ pokemon.name }}</b></p>
+                    </md-card-content>
+                    <md-card-actions>
+                        <md-button class="md-icon-button">
+                            <router-link class="red" :to="getPokeURL(pokemon.name)"><md-icon>add</md-icon></router-link>
+                        </md-button>
+                    </md-card-actions>
+                </md-card>
            </div>
         </div>
     </div>
@@ -35,21 +35,29 @@ export default {
     name: "Home",
     data: function () {
         return {
+            next: null,
+            previous: null,
             pokemons: [],
             errors: []
         }
     },
     created: function () {
         apiService.getPokemons(this.$route.query.offset, this.$route.query.limit)
-        .then(res => { this.pokemons = res.data.pokemon; })
+        .then(res => {
+                        this.pokemons = res.data.pokemon;
+                        this.next = res.data.pokemon.next;
+                        this.previous = res.data.pokemon.previous;
+                    })
         .catch(err => { this.errors = err; });
     },
     updated: function () {
-        this.$nextTick( function () {
             apiService.getPokemons(this.$route.query.offset, this.$route.query.limit)
-            .then(res => { this.pokemons = res.data.pokemon; })
+            .then(res => {
+                            this.pokemons = res.data.pokemon;
+                            this.next = res.data.pokemon.next;
+                            this.previous = res.data.pokemon.previous;
+                        })
             .catch(err => { this.errors = err; });
-        })
     },
     methods: {
         getPokeFirstID() {
@@ -64,55 +72,60 @@ export default {
             if ("count" in this.pokemons) { return this.pokemons.count }
             return null;
         },
-        getRedirect(url) {
-            if (url !== null) {
-                const params = url.split('?')[1].split('&');
-                const offset = params[0].split('=')[1];
-                const limit = params[1].split('=')[1];
-                url = `/?offset=${offset}&limit=${limit}`;
-                return url;
+        getPokeURL(name) {
+            return `/poke/?filterBy=name&filter=${name}`;
+        },
+        onClick(url) {
+            if (url == null) {
+                return this.$router.push('#');
             }
-            return "#"
+            const params = url.split('?')[1].split('&');
+            const offset = params[0].split('=')[1];
+            const limit = params[1].split('=')[1];
+            url = `/?offset=${offset}&limit=${limit}`;
+            return this.$router.push(url);
         }
     }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .capitalize {
     text-transform: capitalize;
 }
-.container {
-    position: center;
+.nav-buttons {
+    margin-left: 40%;
+    margin-top: 30px;
+    margin-bottom: -20px;
 }
-.center-align {
+#next, #previous {
+    margin-top: 15px;
+}
+.nav-buttons .material-icons {
+    font-size: 50px;
+}
+.nav-text {
     font-size: 20px;
     color: white;
 }
-.col.s4 {
-    margin-left: 30px;
-    margin-right: -30px;
+.card-table {
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: 12%;
 }
-.card {
-    width: auto;
+.md-card {
+    width: 200px;
     height: 200px;
-    max-width: 200px;
+    margin: 64px;
 }
-.card .card-image {
-    height: auto;
+.md-card-media img {
     width: auto;
-    max-width: 120px;
-    max-height: 120px;
-    left: 35px;
-    top: 15px;
+    margin-left: 50px;
+    margin-top: 30px;
+    margin-bottom: -10px;
 }
-.card .card-content .card-title {
-    font-size: 17px;
-    margin-left: 0;
-}
-.card .card-content .btn-floating {
-    bottom: 15px;
-    right: 10px;
-    margin-left: 10px;
+.md-card-actions {
+    margin-top: -50px;
 }
 </style>

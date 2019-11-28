@@ -1,11 +1,20 @@
 <template>
     <div>
-    {{ this.pokemon }}
+        <div class="row">
+            <div class="col s12" v-for="poke in pokemon" v-bind:key="poke.name">
+              <div class="card-panel hoverable">
+                <div class="card-tabs" >
+                    <ul class="tabs tabs-fixed-width">
+                    </ul>
+                </div>
+              </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
-import ApiService from '../ApiService'
+import ApiService from '../ApiService';
 const apiService = new ApiService();
 
 export default {

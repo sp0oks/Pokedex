@@ -8,12 +8,8 @@ export default class ApiService {
     }
 
     getPokemonByFilter(type, filter) {
-        if (type === 'id') {
-            return axios.get(`/pokemon/id/${filter}`);
-        }  else if (type === 'name') {
+        if (type === 'name') {
             return axios.get(`/pokemon/name/${filter}`);
-        }  else if (type === 'type') {
-            return axios.get(`/pokemon/type/${filter}`);
         }
     }
 }

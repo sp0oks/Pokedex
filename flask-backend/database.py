@@ -113,25 +113,8 @@ class PokedexData:
         """
         result = ({}, 204)
 
-        if kwargs.get('_id'):
-            info = self.pokedex.pokemon.find_one({'id': kwargs['_id']})
-            # Information about this Pokemon is unknown or incomplete
-            if not info or 'moves' not in info.keys():
-                info = self.get_pokemon_info(kwargs['_id'])
-                if info:
-                    result[0][info['id']] = info
-
-        elif kwargs.get('name'):
+        if kwargs.get('name'):
             info = self.pokedex.pokemon.find({'name': {'$regex': kwargs['name'], '$options': 'i'}})
-            for pokemon in info:
-                # Information about this Pokemon is incomplete
-                if 'moves' not in pokemon.keys():
-                    pokemon = self.get_pokemon_info(pokemon['id'])
-                    if pokemon:
-                        result[0][pokemon['id']] = pokemon
-
-        elif kwargs.get('_type'):
-            info = self.pokedex.pokemon.find({'type': {'$regex': kwargs['_type'], '$options': 'i'}})
             for pokemon in info:
                 # Information about this Pokemon is incomplete
                 if 'moves' not in pokemon.keys():

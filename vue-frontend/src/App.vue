@@ -2,30 +2,26 @@
     <div>
         <head>
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+            <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,500,700,400italic|Material+Icons">
         </head>
         <Navbar/>
-        <div class="container">
-            <router-view/>
-        </div>
+        <router-view/>
     </div>
 </template>
 
 <script>
 import Navbar from './components/Navbar';
 
-import '../node_modules/materialize-css/dist/js/materialize.min.js';
-import '../node_modules/materialize-css/dist/css/materialize.min.css';
-
 export default {
   name: 'app',
   components: {
-    Navbar
+    Navbar,
   }
 };
 </script>
 
 <style>
 html {
-    background-color: #90a4ae;
+    background-color: #90a4ae !important;
 }
 </style>
