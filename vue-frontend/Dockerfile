@@ -1,14 +1,14 @@
 FROM node:lts-alpine as builder
 
+RUN npm install -g http-server
+
 WORKDIR /frontend
-COPY package*.json .
+
+COPY package*.json ./
 RUN npm install
+
 COPY . .
 RUN npm run build
-
-FROM node:lts-alpine as runner
-COPY --from=builder /frontend/dist .
-RUN npm install -g http-server
 
 EXPOSE 8080
 CMD [ "http-server", "dist" ]
