@@ -6,7 +6,6 @@
                 <md-field>
                     <md-select v-model="filterBy" name="filterBy" id="filterBy" placeholder="Filter By...">
                         <md-option value="name">Name</md-option>
-                        <md-option value="type">Type</md-option>
                     </md-select>
                 </md-field>
             </div>

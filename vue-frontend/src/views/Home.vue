@@ -1,16 +1,10 @@
 <template>
     <div>
-        <div class="nav-buttons row">
-            <div class="md-layout md-gutter">
-                <md-button id="previous" class="md-accent" :disabled="previous==null" @click="onClick(previous)"><i class="material-icons">chevron_left</i></md-button>
-                <p class="nav-text">{{ getPokeFirstID() }} - {{ getPokeLastID() }}</p>
-                <md-button id="next" class="md-accent" @click="onClick(next)"><i class="material-icons">chevron_right</i></md-button>
-            </div>
-        </div>
+        <NavButtons :next="next" :previous="previous" :firstID="getPokeFirstID()" :lastID="getPokeLastID()"/>
         <div class="row">
            <div class="card-table">
                 <md-card md-with-hover v-for="pokemon in pokemons.results" v-bind:key="pokemon.id">
-                    <md-card-media md-medium>
+                    <md-card-media>
                         <img :src="pokemon.img" :alt="pokemon.name">
                     </md-card-media>
                     <md-card-content>
@@ -28,11 +22,15 @@
 </template>
 
 <script>
+import NavButtons from '../components/NavButtons'
 import ApiService from '../ApiService';
 const apiService = new ApiService();
 
 export default {
     name: "Home",
+    components: {
+        NavButtons,
+    },
     data: function () {
         return {
             next: null,
@@ -74,40 +72,12 @@ export default {
         },
         getPokeURL(name) {
             return `/poke/?filterBy=name&filter=${name}`;
-        },
-        onClick(url) {
-            if (url == null) {
-                return this.$router.push('#');
-            }
-            const params = url.split('?')[1].split('&');
-            const offset = params[0].split('=')[1];
-            const limit = params[1].split('=')[1];
-            url = `/?offset=${offset}&limit=${limit}`;
-            return this.$router.push(url);
-        }
+        }, 
     }
 }
 </script>
 
 <style lang="scss" scoped>
-.capitalize {
-    text-transform: capitalize;
-}
-.nav-buttons {
-    margin-left: 40%;
-    margin-top: 30px;
-    margin-bottom: -20px;
-}
-#next, #previous {
-    margin-top: 15px;
-}
-.nav-buttons .material-icons {
-    font-size: 50px;
-}
-.nav-text {
-    font-size: 20px;
-    color: white;
-}
 .card-table {
     padding: 10px;
     display: flex;
@@ -117,7 +87,10 @@ export default {
 .md-card {
     width: 200px;
     height: 200px;
-    margin: 64px;
+    margin-left: 64px;
+    margin-right: 64px;
+    margin-top: 20px;
+    margin-bottom: 30px;
 }
 .md-card-media img {
     width: auto;

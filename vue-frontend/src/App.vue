@@ -24,4 +24,7 @@ export default {
 html {
     background-color: #90a4ae !important;
 }
+.capitalize {
+    text-transform: capitalize;
+}
 </style>
