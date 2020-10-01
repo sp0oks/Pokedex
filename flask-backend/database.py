@@ -27,6 +27,9 @@ class ApiCache:
             self.errors[url] = response.status_code
 
     def purge_request(self, url):
+        """
+        Remove request data from database
+        """
         self.requests.pop(url, None)
         self.responses.pop(url, None)
         self.errors.pop(url, None)
